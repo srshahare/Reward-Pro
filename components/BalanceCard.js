@@ -10,7 +10,7 @@ const BalanceCard = () => {
     <View style={[styles.container, Platform.OS === "android" ?styles.containerA : styles.containerB]}>
       <View style={styles.context}>
         <Text style={styles.contextText}>Total Balance</Text>
-        <Text style={styles.title}>400 Credits</Text>
+        <Text style={styles.title}>1300 Credits</Text>
         <Button
           title="Add Credits"
           radius={50}

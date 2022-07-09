@@ -8,7 +8,7 @@ import TxCard from "../components/TxCard";
 
 const screenWidth = Dimensions.get("screen").width;
 
-const HomeScreen = () => {
+const HomeScreen = ({navigation}) => {
   return (
     <View style={styles.container}>
       <Appbar />
@@ -18,7 +18,7 @@ const HomeScreen = () => {
           <BalanceCard />
         </View>
         <View style={{ marginTop: 100 }}>
-          <MenuBar />
+          <MenuBar navigation={navigation} />
         </View>
         <View style={styles.txCard}>
           <TxCard />

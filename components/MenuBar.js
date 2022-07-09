@@ -2,13 +2,13 @@ import { View, StyleSheet } from "react-native";
 import React from "react";
 import CircleIcon from "./CircleIcon";
 
-const MenuBar = () => {
+const MenuBar = ({navigation}) => {
   return (
     <View style={styles.container}>
-        <CircleIcon icon="logo-google-playstore" name="Store" />
-        <CircleIcon icon="gift-outline" name="Reward" />
-        <CircleIcon icon="card-outline" name="Gift Cards" />
-        <CircleIcon icon="chatbox-outline" name="Chat" />
+        <CircleIcon onPress={() => navigation.push("Store")} icon="logo-google-playstore" name="Store" />
+        <CircleIcon onPress={() => navigation.push("Reward")} icon="gift-outline" name="Reward" />
+        <CircleIcon onPress={() => navigation.push("GiftCard")} icon="card-outline" name="Gift Cards" />
+        <CircleIcon onPress={() => navigation.push("Chat")} icon="chatbox-outline" name="Chat" />
     </View>
   );
 };

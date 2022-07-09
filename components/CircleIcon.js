@@ -1,16 +1,18 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import colors from "../styles/colors";
 
-const CircleIcon = ({ icon, name }) => {
+const CircleIcon = ({ icon, name, onPress }) => {
   return (
+    <TouchableOpacity onPress={onPress}>
     <View style={styles.iconContainer}>
       <View style={styles.circle}>
-        <Ionicons name={icon} size={24} color={colors.secondText} />
+        <Ionicons name={icon} size={24} color={colors.secondary} />
       </View>
       <Text style={styles.text}>{name}</Text>
     </View>
+    </TouchableOpacity>
   );
 };
 
@@ -20,7 +22,8 @@ const styles = StyleSheet.create({
   },
   text: {
     marginTop: 4,
-    color: colors.secondText
+    color: colors.secondText,
+    fontWeight: '700'
   },
   circle: {
     borderRadius: 50,

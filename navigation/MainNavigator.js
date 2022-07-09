@@ -9,6 +9,14 @@ import {
 import HomeScreen from "../screens/HomeScreen";
 import colors from "../styles/colors";
 import HomeTabNavigator from "./HomeTabNavigator";
+import StoreScreen from "../screens/StoreScreen";
+import RewardScreen from "../screens/RewardScreen";
+import GiftCardScreen from "../screens/GiftCardScreen";
+import ChatScreen from "../screens/ChatScreen";
+import TransferInfo from "../screens/TransferInfo";
+import ConfirmScreen from "../screens/ConfirmScreen";
+import RegisterScreen from "../screens/RegisterScreen";
+import SignInScreen from "../screens/SignInScreen";
 
 const Stack = createStackNavigator();
 
@@ -26,20 +34,64 @@ const MainNavigator = () => {
       <MyStatusBar barStyle="light-content" backgroundColor={colors.primary} />
       
       <Stack.Navigator
-        initialRouteName="Main"
+        initialRouteName="Home"
         screenOptions={{
           presentation: {
             modal: true,
           },
-          cardStyleInterpolator: CardStyleInterpolators.forScaleFromCenterAndroid,
+          cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
           headerShown: false,
-          headerStyle: { backgroundColor: colors.secondary },
+          headerStyle: { backgroundColor: colors.primary },
+          headerTintColor: '#fff',
+          headerTitleStyle: {
+            fontWeight: 'normal',
+          },
         }}
       >
          <Stack.Screen
           name="Main"
           component={HomeTabNavigator}
           options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="Store"
+          component={StoreScreen}
+          options={{ headerShown: true }}
+        />
+         <Stack.Screen
+          name="Reward"
+          component={RewardScreen}
+          options={{ headerShown: true }}
+        />
+         <Stack.Screen
+          name="GiftCard"
+          component={GiftCardScreen}
+          options={{ headerShown: true }}
+        />
+         <Stack.Screen
+          name="Chat"
+          component={ChatScreen}
+          options={{ headerShown: true }}
+        />
+         <Stack.Screen
+          name="Info"
+          component={TransferInfo}
+          options={{ headerShown: true }}
+        />
+         <Stack.Screen
+          name="Confirm"
+          component={ConfirmScreen}
+          options={{ headerShown: true }}
+        />
+         <Stack.Screen
+          name="Login"
+          component={SignInScreen}
+          options={{ headerShown: true }}
+        />
+         <Stack.Screen
+          name="Register"
+          component={RegisterScreen}
+          options={{ headerShown: true }}
         />
       </Stack.Navigator>
     </NavigationContainer>
