@@ -1,133 +1,119 @@
-import React, { useRef, useState } from "react";
-import { StyleSheet, View, Text, TouchableOpacity } from "react-native";
-// import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
-// import { getAuth, PhoneAuthProvider } from "firebase/auth";
-// import { app } from "../../firebase";
+import React, { useState } from "react";
+import {
+  TouchableOpacity,
+  StyleSheet,
+  View,
+  Text,
+  ScrollView,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import colors from "../styles/colors";
-// import { LinearGradient } from "expo-linear-gradient";
-import { StatusBar } from "expo-status-bar";
-import { Button, Image, Input } from "@rneui/themed";
-
-// const auth = getAuth();
+import { Button, Input } from "@rneui/themed";
 
 const SignInScreen = ({ navigation }) => {
-  const recaptchaVerifier = useRef(null);
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  //   const sendVerificationCode = async () => {
-  //     setLoading(true);
-  //     try {
-  //       if (phoneNumber === "") {
-  //         return Toast.show({
-  //           type: "error",
-  //           text1: `Error`,
-  //           text2: "Phone number should not be empty!",
-  //           position: "top",
-  //           topOffset: 32,
-  //         });
-  //       }
-  //       if (phoneNumber.length < 10) {
-  //         return Toast.show({
-  //           type: "error",
-  //           text1: `Error`,
-  //           text2: "Phone must be of 10 characters long.",
-  //           position: "top",
-  //           topOffset: 32,
-  //         });
-  //       }
-  //       const phoneProvider = new PhoneAuthProvider(auth);
-  //       const verificationId = await phoneProvider.verifyPhoneNumber(
-  //         `+91${phoneNumber}`,
-  //         recaptchaVerifier.current
-  //       );
-  //       Toast.show({
-  //         type: "success",
-  //         text1: `Verification code sent`,
-  //         text2: "Verification code has been sent to your phone.",
-  //         position: "top",
-  //         topOffset: 32,
-  //       });
-  //       navigation.push("OTP", {
-  //         data: {
-  //           verificationId,
-  //           phoneNumber,
-  //         },
-  //       });
-  //     } catch (err) {
-  //       console.log(err.message);
-  //       Toast.show({
-  //         type: "error",
-  //         text1: `Error`,
-  //         text2: `${err.message}`,
-  //         position: "top",
-  //         topOffset: 32,
-  //       });
-  //     }
-  //     setLoading(false);
-  //   };
+  const [email, setEmail] = useState({ value: "", error: "" });
+  const [password, setPassword] = useState({ value: "", error: "" });
 
   return (
-    <View style={styles.container}>
-      <View>
+    <ScrollView style={styles.container} keyboardShouldPersistTaps='handled' >
+      <View style={styles.form}>
         <View style={{ alignItems: "center" }}>
           <View style={styles.header}>
+            {/* <Image
+              source={require("../../assets/logo/qfree_logo1.png")}
+              style={styles.logo}
+            /> */}
             <Text style={styles.headerFirst}>
               Reward <Text style={styles.headerRest}>Pro</Text>
             </Text>
           </View>
         </View>
-        {/* <FirebaseRecaptchaVerifierModal
-          ref={recaptchaVerifier}
-          firebaseConfig={app.options}
-          // attemptInvisibleVerification={true}
-        /> */}
-        <Input
-          label="Phone Number"
-          placeholder="Enter phone number"
-          inputContainerStyle={styles.inputBox}
-          inputStyle={styles.input}
-          containerStyle={{ paddingHorizontal: 0, marginTop: 64 }}
-          style={{ padding: 0 }}
-          // errorMessage={mobile.error}
-          autoCompleteType="tel"
-          textContentType="telephoneNumber"
-          keyboardType="phone-pad"
-          onChangeText={(text) => setPhoneNumber(text)}
-          value={phoneNumber}
-          leftIcon={
-            <Ionicons name="phone-portrait" size={18} color={colors.text} />
-          }
-        />
-      </View>
-      <View>
-        <Button
-          title="Request OTP"
-          color={colors.primary}
-          radius={8}
-          disabled={phoneNumber.length < 10}
-          style={{ marginTop: 24, borderRadius: 8 }}
-          loading={false}
-        />
-        <View style={styles.row}>
-          <Text>Don't have an account? </Text>
-          <TouchableOpacity onPress={() => navigation.replace("Register")}>
-            <Text style={styles.link}>Sign Up</Text>
+        <View style={styles.inputBox}>
+          <Input
+            placeholder="Email Address"
+            style={styles.input}
+            errorMessage={email.error}
+            autoCompleteType="email"
+            textContentType="emailAddress"
+            keyboardType="email-address"
+            onChangeText={(text) => setEmail({ value: text, error: "" })}
+            value={email.value}
+            returnKeyType="next"
+            leftIcon={
+              <Ionicons name="ios-mail" size={18} color={colors.text} />
+            }
+          />
+          <Input
+            style={styles.input}
+            placeholder="Password"
+            errorMessage={password.error}
+            onChangeText={(text) => setPassword({ value: text, error: "" })}
+            value={password.value}
+            returnKeyType="next"
+            secureTextEntry
+            leftIcon={
+              <Ionicons
+                name="ios-lock-closed"
+                size={18}
+                color={colors.text}
+              />
+            }
+          />
+          <TouchableOpacity >
+            <Text style={styles.link}>Reset Password</Text>
           </TouchableOpacity>
         </View>
+        <View>
+          <TouchableOpacity
+            onPress={() => navigation.replace("SignIn")}
+            activeOpacity={0.7}
+            style={styles.btn}
+          >
+            <View style={styles.flex}>
+              <Ionicons
+                name="mail"
+                size={18}
+                color={colors.light}
+                style={{ marginRight: 16 }}
+              />
+              <Text style={{ color: colors.light }}>
+                Login
+              </Text>
+            </View>
+          </TouchableOpacity>
+          <View style={styles.row}>
+            <Text>Don't have an account? </Text>
+            <TouchableOpacity onPress={() => navigation.replace("Register")}>
+              <Text style={styles.link}>SignUp</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    padding: 32,
     height: "100%",
     backgroundColor: colors.light,
-    justifyContent: "space-between",
-    padding: 24,
-    paddingBottom: 48,
+  },
+  flex: {
+    flexDirection: "row",
+    justifyContent: "center",
+    padding: 8,
+  },
+  or: {
+    textAlign: "center",
+    marginTop: 16,
+    fontWeight: "700",
+  },
+  btn: {
+    borderRadius: 4,
+    backgroundColor: colors.primary,
+    height: 40,
+    marginTop: 16,
   },
   logo: {
     width: 100,
@@ -145,22 +131,6 @@ const styles = StyleSheet.create({
     color: colors.primary,
     fontWeight: "bold",
   },
-  flex: {
-    flexDirection: "row",
-    justifyContent: "center",
-    padding: 8,
-  },
-  or: {
-    textAlign: "center",
-    marginTop: 32,
-    fontWeight: "700",
-  },
-  btn: {
-    borderRadius: 4,
-    backgroundColor: colors.primary,
-    height: 40,
-    marginTop: 32,
-  },
   headerRest: {
     color: colors.secondary,
   },
@@ -169,23 +139,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "700",
   },
-  inputBox: {
-    color: colors.text,
-    paddingHorizontal: 16,
-    fontSize: 18,
-    marginHorizontal: 0,
-    textDecorationLine: "none",
-    borderWidth: 1,
-    borderRadius: 8,
-    marginTop: 8,
-  },
   input: {
-    paddingLeft: 16,
+    color: colors.text,
+    paddingHorizontal: 8,
+    fontSize: 14,
+  },
+  inputBox: {
+    marginTop: 25,
   },
   form: {
-    height: "100%",
-    paddingHorizontal: 32,
-    paddingTop: 64,
+    height: 650,
+    justifyContent: "space-between",
   },
   row: {
     flexDirection: "row",

@@ -17,6 +17,7 @@ import TransferInfo from "../screens/TransferInfo";
 import ConfirmScreen from "../screens/ConfirmScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 import SignInScreen from "../screens/SignInScreen";
+import LoadingScreen from "../Extras/LoadingScreen";
 
 const Stack = createStackNavigator();
 
@@ -34,7 +35,7 @@ const MainNavigator = () => {
       <MyStatusBar barStyle="light-content" backgroundColor={colors.primary} />
       
       <Stack.Navigator
-        initialRouteName="Home"
+        initialRouteName="Loading"
         screenOptions={{
           presentation: {
             modal: true,
@@ -48,6 +49,11 @@ const MainNavigator = () => {
           },
         }}
       >
+         <Stack.Screen
+          name="Loading"
+          component={LoadingScreen}
+          options={{ headerShown: false }}
+        />
          <Stack.Screen
           name="Main"
           component={HomeTabNavigator}

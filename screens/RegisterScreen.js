@@ -30,6 +30,32 @@ const RegisterScreen = ({ navigation }) => {
         </View>
         <View style={styles.inputBox}>
           <Input
+            placeholder="UserName"
+            style={styles.input}
+            errorMessage={email.error}
+            textContentType="name"
+            keyboardType="default"
+            onChangeText={(text) => setEmail({ value: text, error: "" })}
+            value={email.value}
+            returnKeyType="next"
+            leftIcon={
+              <Ionicons name="ios-mail" size={18} color={colors.text} />
+            }
+          />
+          <Input
+            placeholder="Mobile Number"
+            style={styles.input}
+            errorMessage={email.error}
+            textContentType="telephoneNumber"
+            keyboardType="number-pad"
+            onChangeText={(text) => setEmail({ value: text, error: "" })}
+            value={email.value}
+            returnKeyType="next"
+            leftIcon={
+              <Ionicons name="ios-mail" size={18} color={colors.text} />
+            }
+          />
+          <Input
             placeholder="Email Address"
             style={styles.input}
             errorMessage={email.error}
@@ -59,9 +85,6 @@ const RegisterScreen = ({ navigation }) => {
               />
             }
           />
-          <TouchableOpacity >
-            <Text style={styles.link}>Reset Password</Text>
-          </TouchableOpacity>
         </View>
         <View>
           <TouchableOpacity
@@ -70,14 +93,8 @@ const RegisterScreen = ({ navigation }) => {
             style={styles.btn}
           >
             <View style={styles.flex}>
-              <Ionicons
-                name="phone-portrait"
-                size={18}
-                color={colors.light}
-                style={{ marginRight: 16 }}
-              />
               <Text style={{ color: colors.light }}>
-                Login with Phone
+                Create Account
               </Text>
             </View>
           </TouchableOpacity>
