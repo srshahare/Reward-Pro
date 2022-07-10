@@ -3,10 +3,10 @@ import React from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import colors from "../styles/colors";
 
-const MenuItem = ({name, icon}) => {
+const MenuItem = ({name, icon, onPress}) => {
   return (
     <View style={{ borderRadius: 8, overflow: "hidden" }}>
-      <TouchableNativeFeedback>
+      <TouchableNativeFeedback onPress={onPress} >
         <View style={styles.container}>
           <View style={styles.flex}>
             <Ionicons name={icon} size={18} />

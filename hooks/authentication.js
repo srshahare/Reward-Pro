@@ -81,31 +81,27 @@ const Auth = () => {
     return token;
   };
 
-  const registerUser = async (userId, phone) => {
+  const registerUser = async (email, password, name, mobile ) => {
     return new Promise(async (resolve, reject) => {
       setLoading(true);
       try {
         const token = await registerForPushNotificationsAsync();
 
-        // const userCredential = await createUserWithEmailAndPassword(
-        //   auth,
-        //   email,
-        //   password
-        // );
-        // const userId = userCredential.user.uid;
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        const userId = userCredential.user.uid;
         setCurrentUser(userId);
 
         await setDoc(doc(db, "customers", userId), {
           id: userId,
           search: "",
-          profile_url: "",
-          full_name: "",
-          email: "",
-          phone_number: phone,
-          address: "",
-          pin_code: "",
+          username: name,
+          email: email,
+          phone_number: mobile,
           isRead: 0,
-          profile_complete: false,
           created_at: serverTimestamp(),
           updated_at: serverTimestamp(),
           expo_token: token,
@@ -173,7 +169,7 @@ const Auth = () => {
     setLoading(true);
     try {
       await signOut(auth);
-      navigation.replace("Flash");
+      navigation.replace("Loading");
     } catch (err) {
       console.log({
         code: err.code,

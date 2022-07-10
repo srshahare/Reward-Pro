@@ -9,20 +9,24 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import colors from "../styles/colors";
 import { Button, Input } from "@rneui/themed";
+import Auth from "../hooks/authentication";
 
 const SignInScreen = ({ navigation }) => {
   const [email, setEmail] = useState({ value: "", error: "" });
   const [password, setPassword] = useState({ value: "", error: "" });
+
+  const { loading, loginUser } = Auth();
+
+  const handleLogin = async () => {
+    const loggedInUserId = await loginUser(email.value, password.value)
+    navigation.push("Main")
+  }
 
   return (
     <ScrollView style={styles.container} keyboardShouldPersistTaps='handled' >
       <View style={styles.form}>
         <View style={{ alignItems: "center" }}>
           <View style={styles.header}>
-            {/* <Image
-              source={require("../../assets/logo/qfree_logo1.png")}
-              style={styles.logo}
-            /> */}
             <Text style={styles.headerFirst}>
               Reward <Text style={styles.headerRest}>Pro</Text>
             </Text>
@@ -64,23 +68,7 @@ const SignInScreen = ({ navigation }) => {
           </TouchableOpacity>
         </View>
         <View>
-          <TouchableOpacity
-            onPress={() => navigation.replace("SignIn")}
-            activeOpacity={0.7}
-            style={styles.btn}
-          >
-            <View style={styles.flex}>
-              <Ionicons
-                name="mail"
-                size={18}
-                color={colors.light}
-                style={{ marginRight: 16 }}
-              />
-              <Text style={{ color: colors.light }}>
-                Login
-              </Text>
-            </View>
-          </TouchableOpacity>
+        <Button title="Login" onPress={handleLogin} color={colors.primary} radius={8} loading={loading} />
           <View style={styles.row}>
             <Text>Don't have an account? </Text>
             <TouchableOpacity onPress={() => navigation.replace("Register")}>

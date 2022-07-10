@@ -9,20 +9,30 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import colors from "../styles/colors";
 import { Button, Input } from "@rneui/themed";
+import Auth from "../hooks/authentication";
 
 const RegisterScreen = ({ navigation }) => {
   const [email, setEmail] = useState({ value: "", error: "" });
   const [password, setPassword] = useState({ value: "", error: "" });
+  const [name, setName] = useState({
+    value: "", error: ""
+  });
+  const [mobile, setMobile] = useState({
+    value: "", error: ""
+  })
+
+  const { registerUser, loading } = Auth();
+
+  const handleRegistration = async () => {
+      const registeredUserId = await registerUser(email.value, password.value, name.value, mobile.value)
+      navigation.push("Main")
+  }
 
   return (
     <ScrollView style={styles.container} keyboardShouldPersistTaps='handled' >
       <View style={styles.form}>
         <View style={{ alignItems: "center" }}>
           <View style={styles.header}>
-            {/* <Image
-              source={require("../../assets/logo/qfree_logo1.png")}
-              style={styles.logo}
-            /> */}
             <Text style={styles.headerFirst}>
               Reward <Text style={styles.headerRest}>Pro</Text>
             </Text>
@@ -35,11 +45,11 @@ const RegisterScreen = ({ navigation }) => {
             errorMessage={email.error}
             textContentType="name"
             keyboardType="default"
-            onChangeText={(text) => setEmail({ value: text, error: "" })}
-            value={email.value}
+            onChangeText={(text) => setName({ value: text, error: "" })}
+            value={name.value}
             returnKeyType="next"
             leftIcon={
-              <Ionicons name="ios-mail" size={18} color={colors.text} />
+              <Ionicons name="ios-person" size={18} color={colors.text} />
             }
           />
           <Input
@@ -48,11 +58,11 @@ const RegisterScreen = ({ navigation }) => {
             errorMessage={email.error}
             textContentType="telephoneNumber"
             keyboardType="number-pad"
-            onChangeText={(text) => setEmail({ value: text, error: "" })}
-            value={email.value}
+            onChangeText={(text) => setMobile({ value: text, error: "" })}
+            value={mobile.value}
             returnKeyType="next"
             leftIcon={
-              <Ionicons name="ios-mail" size={18} color={colors.text} />
+              <Ionicons name="ios-call" size={18} color={colors.text} />
             }
           />
           <Input
@@ -87,17 +97,7 @@ const RegisterScreen = ({ navigation }) => {
           />
         </View>
         <View>
-          <TouchableOpacity
-            onPress={() => navigation.replace("SignIn")}
-            activeOpacity={0.7}
-            style={styles.btn}
-          >
-            <View style={styles.flex}>
-              <Text style={{ color: colors.light }}>
-                Create Account
-              </Text>
-            </View>
-          </TouchableOpacity>
+        <Button title="Create Account" onPress={handleRegistration} radius={8} color={colors.primary} loading={loading} />
           <View style={styles.row}>
             <Text>Don't have an account? </Text>
             <TouchableOpacity onPress={() => navigation.replace("Login")}>

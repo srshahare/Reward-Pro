@@ -1,13 +1,28 @@
 import { View, Text, StyleSheet, Dimensions, ScrollView } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { Avatar } from "@rneui/themed";
 
 import colors from "../styles/colors";
 import MenuItem from "../components/MenuItem";
+import Auth from "../hooks/authentication";
+import ProfileController from "../hooks/profile";
 
 const screenWidth = Dimensions.get("screen").width;
 
-const ProfileScreen = () => {
+const ProfileScreen = ({navigation}) => {
+
+  const {logoutUser, currentUser} = Auth();
+  const { profile, getProfileById } = ProfileController();
+  const handleLogout = () => {
+    logoutUser(navigation)
+  }
+
+  useEffect(() => {
+    if(currentUser) {
+      getProfileById(currentUser)
+    }
+  }, [currentUser])
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.listHeader}>
@@ -19,8 +34,8 @@ const ProfileScreen = () => {
             title="P"
             containerStyle={{ backgroundColor: "coral" }}
           />
-          <Text style={styles.cardText}>User Name</Text>
-          <Text style={styles.cardText}>user@gmail.com</Text>
+          <Text style={styles.cardText}>{profile && profile.username}</Text>
+          <Text style={styles.cardText}>{profile && profile.email}</Text>
         </View>
       </View>
       <View style={styles.box}>
@@ -29,7 +44,7 @@ const ProfileScreen = () => {
       <MenuItem name="About Us" icon="ios-information" />
       <MenuItem name="Privacy Policy" icon="key" />
       <MenuItem name="Share App" icon="share-social" />
-      <MenuItem name="Logout" icon="log-out-outline" />
+      <MenuItem onPress={handleLogout} name="Logout" icon="log-out-outline" />
       </View>
     </ScrollView>
   );

@@ -5,10 +5,16 @@ import Appbar from "../components/Appbar";
 import BalanceCard from "../components/BalanceCard";
 import MenuBar from "../components/MenuBar";
 import TxCard from "../components/TxCard";
+import initializeExpoNoti from "../hooks/initializeExpoNoti";
+import Auth from "../hooks/authentication";
 
 const screenWidth = Dimensions.get("screen").width;
 
 const HomeScreen = ({navigation}) => {
+
+  const { currentUser } = Auth();
+  const {} = initializeExpoNoti(currentUser, navigation);
+
   return (
     <View style={styles.container}>
       <Appbar />
