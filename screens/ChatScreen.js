@@ -5,126 +5,140 @@ import {
   FlatList,
   TextInput,
   Dimensions,
+  Image,
 } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import colors from "../styles/colors";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Button } from "@rneui/themed";
+import ChatController from "../hooks/chat";
+import Auth from "../hooks/authentication";
+import GalleryController from "../hooks/gallary";
 
-const msgs = [
-  {
-    msg: "hello",
-    me: true,
-  },
-  {
-    msg: "hi",
-    me: false,
-  },
-  {
-    msg: "so lets start the process",
-    me: true,
-  },
-  {
-    msg: "yeah I have one doubt in this",
-    me: false,
-  },
-  {
-    msg: "okay tell me",
-    me: false,
-  },
-  {
-    msg: "hi!",
-    me: false,
-  },
-  {
-    msg: "so lets starft the process",
-    me: true,
-  },
-  {
-    msg: "yeah I have onef doubt in this",
-    me: false,
-  },
-  {
-    msg: "okay ftell me",
-    me: false,
-  },
-  {
-    msg: "hfi",
-    me: false,
-  },
-  {
-    msg: "so lets stahrt the process",
-    me: true,
-  },
-  {
-    msg: "yeah I have ohne doubt in this",
-    me: false,
-  },
-  {
-    msg: "okay tell mhe",
-    me: false,
-  },
-  {
-    msg: "hhi",
-    me: false,
-  },
-  {
-    msg: "so lets start the procpess",
-    me: true,
-  },
-  {
-    msg: "yeah I have one domubt in this",
-    me: false,
-  },
-  {
-    msg: "okay tlell me",
-    me: false,
-  },
-];
-const screenHeight = Dimensions.get("screen").height;
+const ChatScreen = ({ navigation }) => {
+  const [msg, setMsg] = useState("");
 
-const ChatScreen = () => {
+  const { currentUser } = Auth();
+  const { openGallery, image, setImage, resetImage } = GalleryController();
+
   const _renderItem = ({ item, index }) => (
-    <View style={[styles.msgBox, item.me ? styles.meBox : styles.msgBox]}>
-      <Text style={[styles.msgText, item.me ? styles.meText : styles.msgText]}>
-        {item.msg}
-      </Text>
+    <View
+      style={[
+        styles.msgBox,
+        item.senderId !== "admin" ? styles.meBox : styles.msgBox,
+      ]}
+    >
+      {item.type === "img" ? (
+        <View
+          style={[
+            styles.msgImg,
+            item.senderId !== "admin" ? styles.meImg : styles.msgImg,
+          ]}
+        >
+          <Image
+            style={styles.chatImg}
+            source={{ uri: item.url }}
+            alt="chat-image"
+          />
+          <Text    style={[
+            styles.msgText,
+            item.senderId !== "admin" ? styles.meText : styles.msgText,
+          ]}>{item.msg}</Text>
+        </View>
+      ) : (
+        <Text
+          style={[
+            styles.msgText,
+            item.senderId !== "admin" ? styles.meText : styles.msgText,
+          ]}
+        >
+          {item.msg}
+        </Text>
+      )}
     </View>
   );
+
+  const { chats, sendMessage, fetchMessages } = ChatController();
+
+  const handleSendMsg = () => {
+    if (msg === "") {
+      return;
+    }
+
+    if (image) {
+      sendMessage(msg, "admin", currentUser, "img", image);
+    } else {
+      sendMessage(msg, "admin", currentUser, "text", null);
+    }
+    setMsg("");
+  };
+
+  const chatSize = chats.length;
+
+  useEffect(() => {
+    if (currentUser) {
+      fetchItems(currentUser);
+    }
+    async function fetchItems(currentUser) {
+      try {
+        await fetchMessages(currentUser);
+      } catch (err) {
+        console.log(err);
+      }
+    }
+  }, [chatSize, currentUser]);
 
   return (
     <View style={styles.container}>
       <FlatList
+        style={{ scaleY: -1 }}
         contentContainerStyle={styles.list}
-        data={msgs}
+        data={chats}
+        //   inverted
         renderItem={_renderItem}
-        keyExtractor={(item) => item.msg}
+        keyExtractor={(item) => item.id}
       />
       <View style={styles.bottom}>
         <Button
           containerStyle={styles.icon}
           color={colors.primary}
+          onPress={openGallery}
           radius={50}
           icon={
-            <Ionicons
-              name="attach-outline"
-              color={colors.light}
-              size={24}
-            />
+            <Ionicons name="attach-outline" color={colors.light} size={24} />
           }
         />
-        <TextInput style={styles.input} placeholder="Type something..." />
+        <View style={styles.inputBox}>
+          <TextInput
+            clearButtonMode="while-editing"
+            value={msg}
+            onChangeText={(text) => setMsg(text)}
+            style={styles.input}
+            placeholder={`Type something...`}
+          />
+          {image && (
+            <View style={styles.imgContainer}>
+              <Image
+                style={styles.img}
+                source={{ uri: image?.uri }}
+                alt="chat-image"
+              />
+              <Ionicons
+                onPress={resetImage}
+                name="close"
+                size={24}
+                color={colors.darkGrey}
+                style={styles.imgIcon}
+              />
+            </View>
+          )}
+        </View>
         <Button
+          onPress={handleSendMsg}
           containerStyle={styles.icon}
           color={colors.primary}
           radius={50}
-          icon={
-            <Ionicons
-              name="ios-send"
-              color={colors.light}
-              size={24}
-            />
-          }
+          icon={<Ionicons name="ios-send" color={colors.light} size={24} />}
         />
       </View>
     </View>
@@ -132,12 +146,54 @@ const ChatScreen = () => {
 };
 
 const styles = StyleSheet.create({
+  inputBox: {
+    borderWidth: 1,
+    width: "70%",
+    borderRadius: 50,
+    height: 50,
+    borderColor: colors.grey,
+  },
+  input: {
+    padding: 12,
+    zIndex: 8,
+  },
+  imgContainer: {
+    width: "100%",
+    height: 200,
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    elevation: 8,
+  },
+  imgIcon: {
+    backgroundColor: colors.light,
+    borderRadius: 50,
+    padding: 4,
+    position: "absolute",
+    top: 0,
+    right: 0,
+  },
+  img: {
+    width: "100%",
+    height: 150,
+    borderRadius: 16,
+    resizeMode: "cover",
+    elevation: 8,
+  },
+  chatImg: {
+    width: 200,
+    height: 150,
+    borderRadius: 16,
+    resizeMode: "cover",
+  },
+
   container: {
     backgroundColor: colors.light,
+    flex: 1,
   },
   list: {
     paddingHorizontal: 16,
-    paddingBottom: 90,
+    paddingTop: 90,
   },
   icon: {
     backgroundColor: colors.grey,
@@ -153,20 +209,15 @@ const styles = StyleSheet.create({
     padding: 16,
     elevation: 16,
     borderTopEndRadius: 16,
-    borderTopStartRadius: 16
+    borderTopStartRadius: 16,
   },
-  input: {
-    borderWidth: 1,
-    width: "70%",
-    padding: 12,
-    borderRadius: 50,
-    borderColor: colors.grey
-  },
+
   msgBox: {
     borderRadius: 16,
     padding: 8,
     marginTop: 4,
     alignItems: "flex-start",
+    scaleY: -1,
   },
   meBox: {
     alignItems: "flex-end",
@@ -177,14 +228,32 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 50,
     borderBottomLeftRadius: 0,
-    elevation: 4
+    borderWidth: 0.2,
+    borderColor: colors.secondary,
+    //   elevation: 8
   },
   meText: {
     backgroundColor: colors.secondary,
     color: colors.light,
     borderBottomRightRadius: 0,
     borderBottomLeftRadius: 50,
-    elevation: 8
+    //   elevation: 8
+  },
+  msgImg: {
+    backgroundColor: colors.secondaryBack,
+    padding: 4,
+    borderRadius: 16,
+    borderBottomLeftRadius: 0,
+    borderWidth: 0.2,
+    borderColor: colors.secondary,
+    //   elevation: 8
+  },
+  meImg: {
+    backgroundColor: colors.secondary,
+    color: colors.light,
+    borderBottomRightRadius: 0,
+    borderBottomLeftRadius: 16,
+    //   elevation: 8
   },
 });
 
