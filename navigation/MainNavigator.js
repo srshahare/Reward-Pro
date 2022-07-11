@@ -18,6 +18,7 @@ import ConfirmScreen from "../screens/ConfirmScreen";
 import RegisterScreen from "../screens/RegisterScreen";
 import SignInScreen from "../screens/SignInScreen";
 import LoadingScreen from "../Extras/LoadingScreen";
+import NotificationScreen from "../screens/NotificationScreen";
 
 const Stack = createStackNavigator();
 
@@ -97,6 +98,11 @@ const MainNavigator = () => {
          <Stack.Screen
           name="Register"
           component={RegisterScreen}
+          options={{ headerShown: true }}
+        />
+         <Stack.Screen
+          name="Notification"
+          component={NotificationScreen}
           options={{ headerShown: true }}
         />
       </Stack.Navigator>

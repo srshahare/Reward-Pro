@@ -5,14 +5,15 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 
 import colors from "../styles/colors";
 
-const BalanceCard = () => {
+const BalanceCard = ({profile, navigation}) => {
   return (
     <View style={[styles.container, Platform.OS === "android" ?styles.containerA : styles.containerB]}>
       <View style={styles.context}>
         <Text style={styles.contextText}>Total Balance</Text>
-        <Text style={styles.title}>1300 Credits</Text>
+        <Text style={styles.title}>{profile?.credits} Credits</Text>
         <Button
           title="Add Credits"
+          onPress={() => navigation.push("Store")}
           radius={50}
           icon={<Ionicons name="add" size={20} color={colors.light} />}
           containerStyle={{width: 150}}

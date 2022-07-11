@@ -3,14 +3,13 @@ import React from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import colors from "../styles/colors";
 
-const Appbar = () => {
+const Appbar = ({profile, navigation}) => {
   return (
     <View style={styles.container}>
       <View style={styles.flex}>
-      <Text style={styles.appbarText}>Hello, Username</Text>
-        <Ionicons name="notifications" size={24} color={colors.light} />
-      </View>
-      
+      <Text style={styles.appbarText}>Hello, {profile?.username}</Text>
+        <Ionicons onPress={() => navigation.push("Notification")} name="notifications" size={24} color={colors.light} />
+      </View>   
     </View>
   );
 };

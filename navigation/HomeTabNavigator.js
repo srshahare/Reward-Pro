@@ -44,7 +44,7 @@ const HomeTabNavigator = () => {
             ),
           }}
         />
-        <Tab.Screen
+        {/* <Tab.Screen
           name="Send Query"
           component={TxScreen}
           options={{
@@ -52,7 +52,7 @@ const HomeTabNavigator = () => {
               <Ionicons name="ios-mail-outline" color={color} size={size} />
             ),
           }}
-        />
+        /> */}
         {/* <Tab.Screen
         name="Favorite"
         component={FavoriteScreen}

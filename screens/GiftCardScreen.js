@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Input, Button } from "@rneui/themed";
 import { Switch } from "@rneui/themed";
+import { Picker } from "@react-native-picker/picker";
 
 import colors from "../styles/colors";
 
@@ -30,8 +31,27 @@ const type = [
   },
 ];
 
+const data = [
+  {
+    currency: "INR",
+  },
+  {
+    currency: "USD",
+  },
+  {
+    currency: "AUD",
+  },
+  {
+    currency: "CNY",
+  },
+  {
+    currency: "CAD",
+  },
+];
+
 const GiftCardScreen = () => {
   const [isCvv, setCvv] = useState(false);
+  const [selectedCredit, setSelectedCredit] = useState();
 
   return (
     <View style={styles.container}>
@@ -83,14 +103,14 @@ const GiftCardScreen = () => {
           onChangeText={(value) => console.log(value)}
           errorStyle={{ color: "red" }}
         />
-        {!isCvv &&
-        <Input
-          placeholder="Enter Gift Card Pin (If Required)"
-          inputContainerStyle={styles.inputContainer}
-          onChangeText={(value) => console.log(value)}
-          errorStyle={{ color: "red" }}
-        />
-        }
+        {!isCvv && (
+          <Input
+            placeholder="Enter Gift Card Pin (If Required)"
+            inputContainerStyle={styles.inputContainer}
+            onChangeText={(value) => console.log(value)}
+            errorStyle={{ color: "red" }}
+          />
+        )}
         {isCvv && (
           <View>
             <Input
@@ -107,6 +127,25 @@ const GiftCardScreen = () => {
             />
           </View>
         )}
+        <Input
+          placeholder="Enter Gift Card Value"
+          inputContainerStyle={styles.inputContainer}
+          onChangeText={(value) => console.log(value)}
+          errorStyle={{ color: "red" }}
+        />
+        <Text>Select Currency</Text>
+        <Picker
+          selectedValue={selectedCredit}
+          onValueChange={(itemValue, itemIndex) => setSelectedCredit(itemValue)}
+        >
+          {data.map((item) => (
+            <Picker.Item
+              key={item.currency}
+              label={`${item.currency}`}
+              value={item.currency}
+            />
+          ))}
+        </Picker>
         <Button title="Submit" radius={8} color={colors.primary} />
       </View>
     </View>

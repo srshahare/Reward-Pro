@@ -1,5 +1,5 @@
 import { View, StyleSheet, Dimensions, ScrollView } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import colors from "../styles/colors";
 import Appbar from "../components/Appbar";
 import BalanceCard from "../components/BalanceCard";
@@ -7,6 +7,7 @@ import MenuBar from "../components/MenuBar";
 import TxCard from "../components/TxCard";
 import initializeExpoNoti from "../hooks/initializeExpoNoti";
 import Auth from "../hooks/authentication";
+import ProfileController from "../hooks/profile";
 
 const screenWidth = Dimensions.get("screen").width;
 
@@ -14,14 +15,23 @@ const HomeScreen = ({navigation}) => {
 
   const { currentUser } = Auth();
   const {} = initializeExpoNoti(currentUser, navigation);
+  const { profile, getProfileById, loading } = ProfileController()
+
+  useEffect(() => {
+    if(currentUser) {
+      getProfileById(currentUser)
+    }
+  }, [currentUser])
 
   return (
     <View style={styles.container}>
-      <Appbar />
+      <Appbar navigation={navigation} profile={profile} />
+      {loading ?
+      <View></View>:
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.header}></View>
         <View style={styles.headerCard}>
-          <BalanceCard />
+          <BalanceCard profile={profile} navigation={navigation} />
         </View>
         <View style={{ marginTop: 100 }}>
           <MenuBar navigation={navigation} />
@@ -30,6 +40,7 @@ const HomeScreen = ({navigation}) => {
           <TxCard />
         </View>
       </ScrollView>
+      }
     </View>
   );
 };
