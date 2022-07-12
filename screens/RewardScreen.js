@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 12,
-    marginTop: 24,
+    marginTop: 22,
   },
   para: {
     color: colors.secondText,
