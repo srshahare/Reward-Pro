@@ -43,6 +43,7 @@ const RewardController = () => {
           mobile,
           address,
           status: "Processing",
+          type: "Reward",
           created_at: serverTimestamp,
           updated_at: serverTimestamp
         });
