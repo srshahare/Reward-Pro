@@ -1,23 +1,46 @@
 import { View, Text, StyleSheet, FlatList, Dimensions } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import TxItem from "../components/TxItem";
 import colors from "../styles/colors";
+import Auth from "../hooks/authentication";
+import RewardController from "../hooks/reward";
 
 const screenWidth = Dimensions.get("screen").width;
 const HistoryScreen = () => {
-  const _renderItem = () => <TxItem />;
+  const { currentUser } = Auth();
+  const { fetchHistory, historyList, loading } = RewardController();
+
+  useEffect(() => {
+    if (currentUser) {
+      fetchHistory(currentUser, null);
+    }
+  }, [currentUser]);
+
+  const handleRefresh = () => {
+    if (currentUser) {
+      fetchHistory(currentUser, null);
+    }
+  };
+
+  const _renderItem = ({ item, index }) => <TxItem item={item} />;
   return (
     <View style={styles.container}>
       <FlatList
-      ListHeaderComponent={() => <View style={styles.listHeader}>
-        <Text style={styles.title}>Transfers</Text>
-        <View style={styles.cardBox}>
-          <Text style={styles.cardText}>Tap on transaction item for more detail</Text>
-        </View>
-      </View>}
-        keyExtractor={item => item}
+        onRefresh={handleRefresh}
+        refreshing={loading}
+        ListHeaderComponent={() => (
+          <View style={styles.listHeader}>
+            <Text style={styles.title}>Transfers</Text>
+            <View style={styles.cardBox}>
+              <Text style={styles.cardText}>
+                Tap on transaction item for more detail
+              </Text>
+            </View>
+          </View>
+        )}
+        keyExtractor={(item) => item.id}
         renderItem={_renderItem}
-        data={[1, 2, 3, 4, 5, 6, 7, 8, 9]}
+        data={historyList}
         contentContainerStyle={styles.listContainer}
       />
     </View>
@@ -27,7 +50,7 @@ const HistoryScreen = () => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.light,
-    flex: 1
+    flex: 1,
   },
   cardBox: {
     borderWidth: 1,
@@ -41,12 +64,12 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderBottomEndRadius: 0,
     borderBottomStartRadius: 0,
-    alignItems: 'center',
-    justifyContent: 'center'
+    alignItems: "center",
+    justifyContent: "center",
   },
   cardText: {
     color: colors.light,
-    fontSize: 16
+    fontSize: 16,
   },
   listHeader: {
     height: 175,
@@ -54,13 +77,13 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingVertical: 32,
     paddingHorizontal: 16,
-    marginBottom: 16
+    marginBottom: 16,
   },
   title: {
     fontSize: 32,
     color: colors.light,
-    fontWeight: "bold"
-  }
+    fontWeight: "bold",
+  },
 });
 
 export default HistoryScreen;

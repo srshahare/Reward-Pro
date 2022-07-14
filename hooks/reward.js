@@ -4,15 +4,19 @@ import {
   getDoc,
   getDocs,
   getFirestore,
+  orderBy,
   query,
   serverTimestamp,
   setDoc,
   updateDoc,
+  where,
+  limit
 } from "firebase/firestore";
 import { useState } from "react";
 
 const RewardController = () => {
   const [loading, setLoading] = useState(false);
+  const [historyList, setHistoryList] = useState([]);
   const db = getFirestore();
 
   const submitReward = async (
@@ -44,8 +48,8 @@ const RewardController = () => {
           address,
           status: "Processing",
           type: "Reward",
-          created_at: serverTimestamp,
-          updated_at: serverTimestamp
+          created_at: serverTimestamp(),
+          updated_at: serverTimestamp(),
         });
         const newCredits = profileCredits - rewardCredits;
         await updateDoc(profileRef, {
@@ -58,11 +62,12 @@ const RewardController = () => {
           position: "top",
           topOffset: 32,
         });
-      }else {
+      } else {
         Toast.show({
           type: "error",
           text1: `Not Enough Credits`,
-          text2: "Please purchase credits from the store to convert to get reward amount",
+          text2:
+            "Please purchase credits from the store to convert to get reward amount",
           position: "top",
           topOffset: 32,
         });
@@ -70,6 +75,7 @@ const RewardController = () => {
 
       sheetRef.current.close();
     } catch (err) {
+      console.log(err);
       Toast.show({
         type: "error",
         text1: `Error`,
@@ -82,7 +88,38 @@ const RewardController = () => {
     setLoading(false);
   };
 
-  return { loading, submitReward };
+  const fetchHistory = async (currentUser, isLimit) => {
+    setLoading(true)
+    try {
+      let historyRef;
+      if (isLimit) {
+        historyRef = query(
+          collection(db, "rewards"),
+          orderBy("created_at", "desc"),
+          where("profile.id", "==", currentUser),
+          limit(5),
+        );
+      } else {
+        historyRef = query(
+          collection(db, "rewards"),
+          orderBy("created_at", "desc"),
+          where("profile.id", "==", currentUser)
+        );
+      }
+      const documentSnapshots = await getDocs(historyRef);
+      const items = [];
+      documentSnapshots.forEach((document) => {
+        items.push(document.data());
+      });
+      setHistoryList(items);
+    } catch (err) {
+      console.log(err);
+      setLoading(false)
+    }
+    setLoading(false)
+  };
+
+  return { loading, submitReward, historyList, fetchHistory };
 };
 
 export default RewardController;

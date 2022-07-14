@@ -370,7 +370,7 @@ const GiftCardScreen = () => {
               />
               <Input
                 placeholder={selectedMethod?.hint}
-                label="UPI"
+                label="Payment Address"
                 inputContainerStyle={styles.inputContainer}
                 leftIcon={
                   <Ionicons

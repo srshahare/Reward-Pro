@@ -7,7 +7,7 @@ export default function formatDate(timestamp, onlyDate) {
     if(onlyDate) {
         return dateFormat(now, "dd-mm-yyyy")
     }
-    return dateFormat(now, "dd-mmm-yyyy, h:MM TT")
+    return dateFormat(now, "ddd, mmm, h:MM tt")
     // return dateFormat(now, "dddd, mmmm dS, yyyy, h:MM:ss TT");
 }
 

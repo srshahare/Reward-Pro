@@ -3,7 +3,7 @@ import React from "react";
 import colors from "../styles/colors";
 import TxItem from "./TxItem";
 
-const TxCard = () => {
+const TxCard = ({list}) => {
   return (
     <View
       style={[
@@ -13,9 +13,9 @@ const TxCard = () => {
     >
       <Text style={styles.secondText}>Recent Transactions</Text>
       <View style={styles.list}>
-        <TxItem />
-        <TxItem />
-        <TxItem />
+      {list.map(item => (
+        <TxItem key={item.id} item={item} />
+      ))}
       </View>
       <View>
         <Text style={styles.primaryText}>See all {">"} </Text>

@@ -73,10 +73,12 @@ const GiftController = () => {
         paymentData,
         profile,
         type: "Gift",
+        status: "Processing",
         created_at: serverTimestamp(),
         updated_at: serverTimestamp(),
       });
 
+      Sheet.current.close();
       Toast.show({
         type: "success",
         text1: `Request Submitted`,
