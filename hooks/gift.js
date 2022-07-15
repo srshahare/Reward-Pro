@@ -1,16 +1,17 @@
 import {
-    collection,
-    doc,
-    getDoc,
-    getDocs,
-    getFirestore,
-    query,
-    serverTimestamp,
-    setDoc,
-    updateDoc,
-  } from "firebase/firestore";
-  import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  getFirestore,
+  query,
+  serverTimestamp,
+  setDoc,
+  updateDoc,
+} from "firebase/firestore";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
 import { useState } from "react";
+import sendPushNotification from "../utils/sendNotification";
 
 const GiftController = () => {
   const [cards, setCards] = useState([]);
@@ -48,7 +49,7 @@ const GiftController = () => {
     Sheet,
     Toast
   ) => {
-      setLoading(true)
+    setLoading(true);
     try {
       const cardRef = doc(collection(db, "rewards"));
       let frontUrl = "";
@@ -86,17 +87,30 @@ const GiftController = () => {
         position: "top",
         topOffset: 32,
       });
+
+      const message = {
+        to: profile.expo_token,
+        sound: "default",
+        title: `Request submitted`,
+        body: `Request to convert gift card  is submitted and will be rewarded within few days`,
+        data: {
+          screen: "Main",
+          data: {},
+        },
+      };
+
+      sendPushNotification(message);
     } catch (err) {
-        Toast.show({
-            type: "error",
-            text1: `Error`,
-            text2: err.message,
-            position: "top",
-            topOffset: 32,
-          });
-      setLoading(false)
+      Toast.show({
+        type: "error",
+        text1: `Error`,
+        text2: err.message,
+        position: "top",
+        topOffset: 32,
+      });
+      setLoading(false);
     }
-    setLoading(false)
+    setLoading(false);
   };
 
   const uploadImage = async (fileString, name) => {

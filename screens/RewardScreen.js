@@ -143,7 +143,7 @@ const RewardScreen = () => {
         />
         <Input
           placeholder={selectedPay?.hint}
-          label="UPI"
+          label="Payment Address"
           inputContainerStyle={styles.inputContainer}
           leftIcon={
             <Ionicons name="ios-card" size={18} color={colors.secondText} />

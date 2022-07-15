@@ -39,7 +39,7 @@ const ProfileScreen = ({navigation}) => {
         </View>
       </View>
       <View style={styles.box}>
-      <MenuItem name="Change Password" icon="ios-lock-closed" />
+      {/* <MenuItem name="Change Password" icon="ios-lock-closed" /> */}
       <MenuItem name="Faq's" icon="help" />
       <MenuItem name="About Us" icon="ios-information" />
       <MenuItem name="Privacy Policy" icon="key" />

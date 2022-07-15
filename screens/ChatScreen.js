@@ -4,12 +4,15 @@ import {
   StyleSheet,
   FlatList,
   TextInput,
-  Dimensions,
   Image,
+  TouchableOpacity,
+  Modal,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import colors from "../styles/colors";
+import Toast from "react-native-toast-message";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import * as Clipboard from "expo-clipboard";
 import { Button } from "@rneui/themed";
 import ChatController from "../hooks/chat";
 import Auth from "../hooks/authentication";
@@ -17,34 +20,60 @@ import GalleryController from "../hooks/gallary";
 
 const ChatScreen = ({ navigation }) => {
   const [msg, setMsg] = useState("");
+  const [imgVisible, setImgVisible] = useState(false);
+  const [img, setImg] = useState("");
 
   const { currentUser } = Auth();
   const { openGallery, image, setImage, resetImage } = GalleryController();
 
+  const handleCopyMsg = async (msg) => {
+    await Clipboard.setStringAsync(msg);
+    Toast.show({
+      type: "info",
+      text1: `Copied to Clipboard`,
+      text2: `Message has been copied to clipboard`,
+      position: "top",
+      topOffset: 32,
+    });
+  };
+
   const _renderItem = ({ item, index }) => (
-    <View
+    <TouchableOpacity
+      onLongPress={() => handleCopyMsg(item?.msg)}
       style={[
         styles.msgBox,
         item.senderId !== "admin" ? styles.meBox : styles.msgBox,
       ]}
     >
       {item.type === "img" ? (
-        <View
+        <TouchableOpacity
+          onPress={() => {
+            setImgVisible(!imgVisible);
+            setImg(item.url);
+          }}
           style={[
             styles.msgImg,
             item.senderId !== "admin" ? styles.meImg : styles.msgImg,
           ]}
         >
-          <Image
-            style={styles.chatImg}
-            source={{ uri: item.url }}
-            alt="chat-image"
-          />
-          <Text    style={[
-            styles.msgText,
-            item.senderId !== "admin" ? styles.meText : styles.msgText,
-          ]}>{item.msg}</Text>
-        </View>
+          {item?.url !== "" && (
+            <Image
+              style={styles.chatImg}
+              source={{ uri: item?.url }}
+              alt="chat-image"
+            />
+          )}
+          {item?.msg !== "" && (
+            <Text
+              style={[
+                styles.msgText,
+                item.senderId !== "admin" ? styles.meText : styles.msgText,
+              ]}
+            >
+              {item.msg}
+            </Text>
+          )}
+        </TouchableOpacity>
       ) : (
         <Text
           style={[
@@ -55,14 +84,45 @@ const ChatScreen = ({ navigation }) => {
           {item.msg}
         </Text>
       )}
-    </View>
+      <Modal
+        animationType="fade"
+        visible={imgVisible}
+        presentationStyle="pageSheet"
+        statusBarTranslucent={true}
+        collapsable
+        // transparent={true}
+        onRequestClose={() => setImgVisible(!imgVisible)}
+        style={{ backgroundColor: "black" }}
+      >
+        <View style={styles.imgContext}>
+          <Ionicons
+            onPress={() => setImgVisible(!imgVisible)}
+            name="arrow-back-circle"
+            color={colors.light}
+            size={40}
+            style={styles.back}
+          />
+          <Image
+            style={styles.fullImg}
+            source={{ uri: img }}
+            alt="chat-image"
+          />
+        </View>
+      </Modal>
+    </TouchableOpacity>
   );
 
   const { chats, sendMessage, fetchMessages } = ChatController();
 
   const handleSendMsg = () => {
-    if (msg === "") {
-      return;
+    if (msg === "" && !image) {
+      return Toast.show({
+        type: "error",
+        text1: `Oops!`,
+        text2: `Empty message cannot be sent`,
+        position: "top",
+        topOffset: 32,
+      });
     }
 
     if (image) {
@@ -71,12 +131,14 @@ const ChatScreen = ({ navigation }) => {
       sendMessage(msg, "admin", currentUser, "text", null);
     }
     setMsg("");
+    setImage(null);
   };
 
   const chatSize = chats.length;
 
   useEffect(() => {
     if (currentUser) {
+      console.log("triggerd");
       fetchItems(currentUser);
     }
     async function fetchItems(currentUser) {
@@ -165,6 +227,17 @@ const styles = StyleSheet.create({
     left: 0,
     elevation: 8,
   },
+  imgContext: {
+    height: "100%",
+    backgroundColor: colors.dark,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  back: {
+    position: "absolute",
+    left: 16,
+    top: 64,
+  },
   imgIcon: {
     backgroundColor: colors.light,
     borderRadius: 50,
@@ -180,8 +253,13 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
     elevation: 8,
   },
+  fullImg: {
+    width: "100%",
+    height: 400,
+    resizeMode: "contain",
+  },
   chatImg: {
-    width: 200,
+    width: 300,
     height: 150,
     borderRadius: 16,
     resizeMode: "cover",

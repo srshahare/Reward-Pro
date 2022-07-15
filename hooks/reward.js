@@ -13,6 +13,7 @@ import {
   limit
 } from "firebase/firestore";
 import { useState } from "react";
+import sendPushNotification from "../utils/sendNotification";
 
 const RewardController = () => {
   const [loading, setLoading] = useState(false);
@@ -74,6 +75,19 @@ const RewardController = () => {
       }
 
       sheetRef.current.close();
+      const message = {
+        to: profile.expo_token,
+        sound: "default",
+        title: `Request submitted`,
+        body: `Request to convert ${rewardCredits} Credits  is submitted and will be rewarded within 15 days`,
+        data: {
+          screen: "Main",
+          data: {},
+        },
+      };
+
+      sendPushNotification(message);
+
     } catch (err) {
       console.log(err);
       Toast.show({

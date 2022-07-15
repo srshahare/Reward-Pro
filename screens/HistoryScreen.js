@@ -77,13 +77,15 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingVertical: 32,
     paddingHorizontal: 16,
-    marginBottom: 16,
   },
   title: {
     fontSize: 32,
     color: colors.light,
     fontWeight: "bold",
   },
+  listContainer: {
+
+  }
 });
 
 export default HistoryScreen;

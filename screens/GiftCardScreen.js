@@ -3,7 +3,6 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  FlatList,
   TouchableOpacity,
   TouchableNativeFeedback,
 } from "react-native";
@@ -121,6 +120,19 @@ const GiftCardScreen = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      {selectedCard && (
+        <View style={[styles.infoContainer, { marginTop: 16 }]}>
+          <Ionicons
+            name="ios-information-circle-outline"
+            color={colors.secondary}
+            size={24}
+          />
+          <Text style={styles.text}>
+            You will receive {selectedCard?.percent}% of the total worth of the
+            selected card
+          </Text>
+        </View>
+      )}
       <Text style={styles.headline}>Type of Gift Card</Text>
       <View style={styles.flex}>
         {type.map((item, index) => (

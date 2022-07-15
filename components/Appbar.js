@@ -8,7 +8,7 @@ const Appbar = ({profile, navigation}) => {
     <View style={styles.container}>
       <View style={styles.flex}>
       <Text style={styles.appbarText}>Hello, {profile?.username}</Text>
-        <Ionicons onPress={() => navigation.push("Notification")} name="notifications" size={24} color={colors.light} />
+        {/* <Ionicons onPress={() => navigation.push("Notification")} name="notifications" size={24} color={colors.light} /> */}
       </View>   
     </View>
   );

@@ -111,8 +111,8 @@ const Auth = () => {
         const message = {
           to: token,
           sound: "default",
-          title: `Welcome Customer`,
-          body: "Explore services and products on your finger tips",
+          title: `Welcome ${name}`,
+          body: "Explore the home screen to check all the services",
           data: {
             screen: "Main",
             data: {},

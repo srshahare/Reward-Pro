@@ -7,6 +7,7 @@ import {
     query,
     serverTimestamp,
     setDoc,
+    updateDoc,
   } from "firebase/firestore";
 import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
   import { useState } from "react";
@@ -20,19 +21,22 @@ import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
       try {
         const chatRef = doc(collection(db, "customers", senderId, "chats"));
         let url = "";
-        if(image) {
-            url = await uploadImage(image.uri, image.uri);
-        }
-        const chatDoc = await setDoc(chatRef, {
+        await setDoc(chatRef, {
           id: chatRef.id,
           msg,
           userId,
           senderId,
           type,
-          url,
+          url: "",
           created_at: serverTimestamp(),
           updated_at: serverTimestamp(),
         });
+        if(image) {
+            url = await uploadImage(image.uri, image.uri);
+            await updateDoc(chatRef, {
+              url
+            })
+        }
       } catch (err) {
         console.log(err);
       }

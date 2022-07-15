@@ -18,7 +18,7 @@ const TxCard = ({list}) => {
       ))}
       </View>
       <View>
-        <Text style={styles.primaryText}>See all {">"} </Text>
+        {/* <Text style={styles.primaryText}>See all {">"} </Text> */}
       </View>
     </View>
   );
