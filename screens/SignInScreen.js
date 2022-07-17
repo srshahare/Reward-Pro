@@ -7,6 +7,7 @@ import {
   ScrollView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import Toast from "react-native-toast-message";
 import colors from "../styles/colors";
 import { Button, Input } from "@rneui/themed";
 import Auth from "../hooks/authentication";
@@ -15,15 +16,38 @@ const SignInScreen = ({ navigation }) => {
   const [email, setEmail] = useState({ value: "", error: "" });
   const [password, setPassword] = useState({ value: "", error: "" });
 
-  const { loading, loginUser } = Auth();
+  const { loading, loginUser, sendResetLink } = Auth();
 
   const handleLogin = async () => {
-    const loggedInUserId = await loginUser(email.value, password.value)
-    navigation.push("Main")
-  }
+    try {
+      await loginUser(email.value, password.value);
+      navigation.push("Main");
+    } catch (err) {
+      Toast.show({
+        type: "error",
+        text1: `Error`,
+        text2: err.message,
+        position: "top",
+        topOffset: 32,
+      });
+    }
+  };
+
+  const handleReset = async () => {
+    if (email.value === "") {
+      return Toast.show({
+        type: "success",
+        text1: `Reset Link Sent`,
+        text2: `Password reset link is sent to your registered email address`,
+        position: "top",
+        topOffset: 32,
+      });
+    }
+    sendResetLink(email.value, Toast);
+  };
 
   return (
-    <ScrollView style={styles.container} keyboardShouldPersistTaps='handled' >
+    <View style={styles.container} keyboardShouldPersistTaps="handled">
       <View style={styles.form}>
         <View style={{ alignItems: "center" }}>
           <View style={styles.header}>
@@ -56,19 +80,22 @@ const SignInScreen = ({ navigation }) => {
             returnKeyType="next"
             secureTextEntry
             leftIcon={
-              <Ionicons
-                name="ios-lock-closed"
-                size={18}
-                color={colors.text}
-              />
+              <Ionicons name="ios-lock-closed" size={18} color={colors.text} />
             }
           />
-          <TouchableOpacity >
+          <TouchableOpacity onPress={handleReset}>
             <Text style={styles.link}>Reset Password</Text>
           </TouchableOpacity>
         </View>
         <View>
-        <Button title="Login" onPress={handleLogin} color={colors.primary} radius={8} loading={loading} />
+          <Button
+            title="Login"
+            disabled={email.value === "" || password.value === ""}
+            onPress={handleLogin}
+            color={colors.primary}
+            radius={8}
+            loading={loading}
+          />
           <View style={styles.row}>
             <Text>Don't have an account? </Text>
             <TouchableOpacity onPress={() => navigation.replace("Register")}>
@@ -77,14 +104,14 @@ const SignInScreen = ({ navigation }) => {
           </View>
         </View>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     padding: 32,
-    height: "100%",
+    flex: 1,
     backgroundColor: colors.light,
   },
   flex: {
@@ -136,7 +163,7 @@ const styles = StyleSheet.create({
     marginTop: 25,
   },
   form: {
-    height: 650,
+    height: "100%",
     justifyContent: "space-between",
   },
   row: {

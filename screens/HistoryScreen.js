@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, FlatList, Dimensions } from "react-native";
 import React, { useEffect } from "react";
+import LottieView from "lottie-react-native";
 import TxItem from "../components/TxItem";
 import colors from "../styles/colors";
 import Auth from "../hooks/authentication";
@@ -26,6 +27,17 @@ const HistoryScreen = () => {
   return (
     <View style={styles.container}>
       <FlatList
+        ListEmptyComponent={
+          <View style={styles.box}>
+            <LottieView
+              source={require("../assets/json/10000-empty-box.json")}
+              autoPlay
+              speed={0.2}
+              style={{ height: 250 }}
+            />
+            <Text style={styles.titleP}>No Transactions Yet!</Text>
+          </View>
+        }
         onRefresh={handleRefresh}
         refreshing={loading}
         ListHeaderComponent={() => (
@@ -83,9 +95,15 @@ const styles = StyleSheet.create({
     color: colors.light,
     fontWeight: "bold",
   },
-  listContainer: {
-
-  }
+  titleP: {
+    fontWeight: "bold",
+    fontSize: 18,
+    color: colors.dark
+  },
+  box: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
 
 export default HistoryScreen;

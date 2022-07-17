@@ -138,7 +138,6 @@ const ChatScreen = ({ navigation }) => {
 
   useEffect(() => {
     if (currentUser) {
-      console.log("triggerd");
       fetchItems(currentUser);
     }
     async function fetchItems(currentUser) {

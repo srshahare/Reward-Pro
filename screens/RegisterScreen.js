@@ -4,32 +4,44 @@ import {
   StyleSheet,
   View,
   Text,
-  ScrollView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import colors from "../styles/colors";
 import { Button, Input } from "@rneui/themed";
 import Auth from "../hooks/authentication";
+import Toast from 'react-native-toast-message'
 
 const RegisterScreen = ({ navigation }) => {
   const [email, setEmail] = useState({ value: "", error: "" });
   const [password, setPassword] = useState({ value: "", error: "" });
   const [name, setName] = useState({
-    value: "", error: ""
+    value: "",
+    error: "",
   });
   const [mobile, setMobile] = useState({
-    value: "", error: ""
-  })
+    value: "",
+    error: "",
+  });
 
   const { registerUser, loading } = Auth();
 
   const handleRegistration = async () => {
-      const registeredUserId = await registerUser(email.value, password.value, name.value, mobile.value)
-      navigation.push("Main")
-  }
+    try {
+      await registerUser(email.value, password.value, name.value, mobile.value);
+      navigation.push("Main");
+    } catch (err) {
+      Toast.show({
+        type: "error",
+        text1: `Error`,
+        text2: err.message,
+        position: "top",
+        topOffset: 32,
+      });
+    }
+  };
 
   return (
-    <ScrollView style={styles.container} keyboardShouldPersistTaps='handled' >
+    <View style={styles.container} keyboardShouldPersistTaps="handled">
       <View style={styles.form}>
         <View style={{ alignItems: "center" }}>
           <View style={styles.header}>
@@ -88,16 +100,24 @@ const RegisterScreen = ({ navigation }) => {
             returnKeyType="next"
             secureTextEntry
             leftIcon={
-              <Ionicons
-                name="ios-lock-closed"
-                size={18}
-                color={colors.text}
-              />
+              <Ionicons name="ios-lock-closed" size={18} color={colors.text} />
             }
           />
         </View>
         <View>
-        <Button title="Create Account" onPress={handleRegistration} radius={8} color={colors.primary} loading={loading} />
+          <Button
+            disabled={
+              name.value === "" ||
+              mobile.value === "" ||
+              email === "" ||
+              password === ""
+            }
+            title="Create Account"
+            onPress={handleRegistration}
+            radius={8}
+            color={colors.primary}
+            loading={loading}
+          />
           <View style={styles.row}>
             <Text>Don't have an account? </Text>
             <TouchableOpacity onPress={() => navigation.replace("Login")}>
@@ -106,14 +126,14 @@ const RegisterScreen = ({ navigation }) => {
           </View>
         </View>
       </View>
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     padding: 32,
-    height: "100%",
+    flex: 1,
     backgroundColor: colors.light,
   },
   flex: {
@@ -165,7 +185,7 @@ const styles = StyleSheet.create({
     marginTop: 25,
   },
   form: {
-    height: 650,
+    height: "100%",
     justifyContent: "space-between",
   },
   row: {

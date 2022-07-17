@@ -24,6 +24,7 @@ import {
 import * as Notifications from "expo-notifications";
 import Constants from "expo-constants";
 import sendPushNotification from "../utils/sendNotification";
+import ChatController from "./chat";
 
 const Auth = () => {
   const [authState, setAuthState] = useState(null);
@@ -32,6 +33,7 @@ const Auth = () => {
   const [emailVerified, setEmailVerified] = useState(true);
   const auth = getAuth();
   const db = getFirestore();
+  const { sendMessage } = ChatController();
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -107,6 +109,8 @@ const Auth = () => {
           updated_at: serverTimestamp(),
           expo_token: token,
         });
+
+        sendMessage("Hey there!, I am using Reward Pro", "admin", userId, "text", null)
 
         const message = {
           to: token,
@@ -192,6 +196,13 @@ const Auth = () => {
         topOffset: 32,
       });
     } catch (err) {
+      Toast.show({
+        type: "error",
+        text1: `Error`,
+        text2: err.message,
+        position: "top",
+        topOffset: 32,
+      });
       console.log(err.message);
     }
     setLoading(false);
